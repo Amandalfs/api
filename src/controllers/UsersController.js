@@ -1,5 +1,5 @@
 const AppError = require('../utils/AppError');
-const { hash } = require('bcrypt');
+const { hash, compare } = require('bcrypt');
 
 const sqliteConection = require('../database/sqlite');
 const appError = require('../utils/AppError');
@@ -22,7 +22,7 @@ class UsersController {
     }
 
     async update(req, res){
-        const { name, email } = req.body;
+        const { name, email, password, old_password } = req.body;
         const { id } = req.params;
 
         const database = await sqliteConection();
@@ -38,16 +38,31 @@ class UsersController {
             throw new  appError("Nao pode mudar email, uma conta com esse email ja existe")
         }
 
-        user.name = name;
-        user.email = email;
+        user.name = name ?? user.name;
+        user.email = email ?? user.email;
+
+        if(password && !old_password){
+            throw new AppError("Precisa informar a senha antiga para redefinir a senha")
+        }
+
+        if(password && old_password){
+            const checkPassword = await compare(old_password, user.password)
+            
+            if(!checkPassword){
+                throw new AppError("A senha antiga nao confere.")
+            }
+
+            user.password = await hash(password, 8);
+        }
 
         await database.run(
         `UPDATE users SET
         name = ?,
         email = ?,
-        updated_at = ?
+        password = ?,
+        updated_at = DATETIME('now')
         WHERE id = ?`,
-        [user.name, user.email, new Date(), id]
+        [user.name, user.email, user.password, id]
         );
 
         res.status(200).json()

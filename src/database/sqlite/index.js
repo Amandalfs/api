@@ -7,6 +7,8 @@ async function sqliteConection(){
         filename: path.resolve(__dirname, "..", "database.db"),
         driver: sqlite3.Database
     })
+
+    return database;
 }
 
 module.exports = sqliteConection;

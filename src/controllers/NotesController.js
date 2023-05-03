@@ -33,6 +33,19 @@ class NotesController{
 
         res.json();
     }
+
+    async show(req, res){
+        const { id } = req.params;
+
+        const note = await db('notes').where({ id }).first()
+        const tags = await db('tags').where({note_id: id}).orderBy('name');
+        const links = await db('links').where({note_id: id}).orderBy('created_at');
+        return res.json({  
+            note,
+            tags,
+            links
+        })
+    }
 }
 
 module.exports = NotesController;

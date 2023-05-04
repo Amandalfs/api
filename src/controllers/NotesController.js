@@ -31,7 +31,7 @@ class NotesController{
 
         await db('tags').insert(tagsInsert);
 
-        res.json();
+        return res.json();
     }
 
     async show(req, res){

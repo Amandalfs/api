@@ -65,7 +65,7 @@ class UsersController {
         [user.name, user.email, user.password, id]
         );
 
-        res.status(200).json()
+        return res.status(200).json()
     }
 }
 

@@ -3,7 +3,7 @@ const appError = require("../utils/AppError");
 const authConfig = require("../config/auth");
 
 
-function ensureAuthenticated(req, res, nex){
+async function ensureAuthenticated(req, res, next){
     const authHeader = req.headers.authorization;
 
     if(!authHeader){
@@ -11,17 +11,18 @@ function ensureAuthenticated(req, res, nex){
     }
 
     const [, token] = authHeader.split(" ")
+    
 
     try {
-        const {sub: user_id} = verify(token, authConfig.jwt.secret);
+        const {sub: user_id} = await verify(token, authConfig.jwt.secret);
         
         req.user = {
             id: Number(user_id)
         }; 
-
+        
         return next();
     } catch (error) {
-        throw new appError("JWT Token Invalido", 401)
+        throw new appError(`JWT Token Invalido ${error}`, 401)
     }
 }
 

@@ -1,4 +1,4 @@
-class appError {
+class AppError {
     message;
     statusCode;
 
@@ -8,4 +8,4 @@ class appError {
     }
 }
 
-module.exports = appError;
+module.exports = AppError;

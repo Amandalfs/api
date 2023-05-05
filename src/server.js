@@ -23,7 +23,7 @@ app.use((error, req, res, next)=>{
             message: error.message
         })
     }
-
+    
     console.error(error);
     
     return res.status(500).json({
@@ -31,6 +31,7 @@ app.use((error, req, res, next)=>{
         message: "Internal Server Error"
     })
 })
+
 
 app.listen(PORT, ()=>{
     console.log(`O servidor esta rodando a ${PORT}`);

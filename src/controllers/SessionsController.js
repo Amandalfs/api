@@ -9,12 +9,13 @@ class SessionsController {
         const { email, password } = req.body;
 
         const user = await db('users').where({email}).first();
+        
+        if(!user || password=== null){  
+            throw new AppError("Email e/ou senha Incorreta!");
+        }
+        
         const ComparedPassword = await compare(password, user.password);
         
-        if(!user){  
-            throw new AppError("mail e/ou senha Incorreta!");
-        }
-
         if(!ComparedPassword){
             throw new AppError("Email e/ou senha Incorreta!");
         }
